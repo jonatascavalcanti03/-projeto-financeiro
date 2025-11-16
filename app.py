@@ -1,6 +1,6 @@
 # Aplicativo de Organização Financeira Pessoal
 # Desenvolvido com Flask + Bootstrap + SQLAlchemy
-# Comentários simples para facilitar entendimento
+
 
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
