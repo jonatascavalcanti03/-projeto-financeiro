@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Finanças Pessoais{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Saldo Atual</h5>
+                <h2 class="card-text fw-bold">
+                    R$ {{ "%.2f"|format(saldo_atual) }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Nova Transação</h5>
+                <form method="POST" action="{{ url_for('adicionar_transacao') }}">
+                    <div class="row g-3">
+                        <div class="col-12 col-lg-4">
+                            <label for="descricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" required>
+                        </div>
+                        <div class="col-6 col-lg-2">
+                            <label for="data" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="data" name="data" value="{{ now|date('%Y-%m-%d') }}" required>
+                        </div>
+                        <div class="col-6 col-lg-2">
+                            <label for="valor" class="form-label">Valor (R$)</label>
+                            <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0.01" required>
+                        </div>
+                        <div class="col-6 col-lg-2">
+                            <label for="tipo" class="form-label">Tipo</label>
+                            <select class="form-select" id="tipo" name="tipo" required>
+                                <option value="Receita">Receita</option>
+                                <option value="Despesa" selected>Despesa</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-lg-2">
+                            <label for="categoria" class="form-label">Categoria</label>
+                            <select class="form-select" id="categoria" name="categoria" required>
+                                {% for categoria in categorias_orcamento %}
+                                <option value="{{ categoria }}">{{ categoria }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">Adicionar Transação</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title d-flex justify-content-between">
+                    Resumo do Orçamento
+                    <a href="{{ url_for('orcamento_page') }}" class="btn btn-sm btn-outline-secondary">Editar Metas</a>
+                </h5>
+                
+                {% if resumo_orcamento %}
+                <ul class="list-group list-group-flush">
+                    {% for item in resumo_orcamento %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="fw-bold">{{ item.categoria }}</div>
+                        <div class="text-end">
+                            <small class="text-muted">Gasto: R$ {{ "%.2f"|format(item.gasto) }} / Limite: R$ {{ "%.2f"|format(item.limite) }}</small>
+                            <span class="badge {% if item.restante >= 0 %}bg-success{% else %}bg-danger{% endif %} ms-2">
+                                R$ {{ "%.2f"|format(item.restante) }}
+                            </span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted text-center">Defina seus orçamentos na página "Orçamento" para começar a monitorar!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Últimas Transações</h5>
+                
+                {% if transacoes %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transacao in transacoes %}
+                            <tr>
+                                <td>{{ transacao.data|date('%d/%m/%Y') }}</td>
+                                <td>{{ transacao.descricao }}</td>
+                                <td>{{ transacao.categoria }}</td>
+                                <td class="{% if transacao.tipo == 'Receita' %}text-success{% else %}text-danger{% endif %} fw-bold">
+                                    R$ {{ "%.2f"|format(transacao.valor) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">Nenhuma transação registrada ainda.</p>
+                {% endif %}
+                
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('extrato') }}" class="btn btn-outline-primary">Ver Extrato Completo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

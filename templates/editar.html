@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Transação{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Editar Transação #{{ transacao.id }}</h5>
+                <p class="text-muted">Ajuste os detalhes desta transação.</p>
+                
+                <form method="POST" action="{{ url_for('salvar_edicao', transacao_id=transacao.id) }}">
+                    <div class="row g-3">
+                        
+                        <div class="col-12">
+                            <label for="descricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" value="{{ transacao.descricao }}" required>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="data" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="data" name="data" 
+                                   value="{{ transacao.data|date('%Y-%m-%d') }}" required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="valor" class="form-label">Valor (R$)</label>
+                            <input type="number" class="form-control" id="valor" name="valor" step="0.01" min="0.01" 
+                                   value="{{ '%.2f'|format(transacao.valor) }}" required>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="tipo" class="form-label">Tipo</label>
+                            <select class="form-select" id="tipo" name="tipo" required>
+                                <option value="Receita" {% if transacao.tipo == 'Receita' %}selected{% endif %}>Receita</option>
+                                <option value="Despesa" {% if transacao.tipo == 'Despesa' %}selected{% endif %}>Despesa</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="categoria" class="form-label">Categoria</label>
+                            <select class="form-select" id="categoria" name="categoria" required>
+                                {% for categoria in categorias_orcamento %}
+                                <option value="{{ categoria }}" {% if transacao.categoria == categoria %}selected{% endif %}>{{ categoria }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-4 d-flex justify-content-between">
+                            <a href="{{ url_for('extrato') }}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

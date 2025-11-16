@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Extrato - Finanças Pessoais{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title mb-0">Extrato Completo</h5>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">Voltar ao Dashboard</a>
+                </div>
+
+                <form method="GET" action="{{ url_for('extrato') }}" class="mb-4">
+                    <div class="row g-3 align-items-end">
+                        
+                        <div class="col-12 col-md-3">
+                            <label for="filtro_categoria" class="form-label">Categoria</label>
+                            <select class="form-select" id="filtro_categoria" name="categoria">
+                                <option value="Todos" {% if filtro_categoria_atual == 'Todos' %}selected{% endif %}>Todas</option>
+                                {% for categoria in categorias_orcamento %}
+                                <option value="{{ categoria }}" {% if filtro_categoria_atual == categoria %}selected{% endif %}>{{ categoria }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-md-3">
+                            <label for="filtro_tipo" class="form-label">Tipo</label>
+                            <select class="form-select" id="filtro_tipo" name="tipo">
+                                <option value="Todos" {% if filtro_tipo_atual == 'Todos' %}selected{% endif %}>Todos</option>
+                                <option value="Receita" {% if filtro_tipo_atual == 'Receita' %}selected{% endif %}>Receitas</option>
+                                <option value="Despesa" {% if filtro_tipo_atual == 'Despesa' %}selected{% endif %}>Despesas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-6 col-md-2">
+                            <label for="filtro_mes" class="form-label">Mês</label>
+                            <select class="form-select" id="filtro_mes" name="mes">
+                                <option value="0" {% if filtro_mes_atual == '0' %}selected{% endif %}>Todos</option>
+                                {% for num, nome in meses_disponiveis.items() %}
+                                <option value="{{ num }}" {% if filtro_mes_atual == num|string %}selected{% endif %}>{{ nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-6 col-md-2">
+                            <label for="filtro_ano" class="form-label">Ano</label>
+                            <select class="form-select" id="filtro_ano" name="ano">
+                                <option value="0" {% if filtro_ano_atual == '0' %}selected{% endif %}>Todos</option>
+                                {% for ano in anos_disponiveis %}
+                                <option value="{{ ano }}" {% if filtro_ano_atual == ano|string %}selected{% endif %}>{{ ano }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-md-2">
+                            <button type="submit" class="btn btn-outline-secondary w-100">Aplicar Filtros</button>
+                        </div>
+                    </div>
+                </form>
+                {% if transacoes %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                                <th>Ações</th> </tr>
+                        </thead>
+                        <tbody>
+                            {% for transacao in transacoes %}
+                            <tr>
+                                <td>{{ transacao.data|date('%d/%m/%Y') }}</td>
+                                <td>{{ transacao.descricao }}</td>
+                                <td>{{ transacao.categoria }}</td>
+                                <td class="{% if transacao.tipo == 'Receita' %}text-success{% else %}text-danger{% endif %} fw-bold">
+                                    R$ {{ "%.2f"|format(transacao.valor) }}
+                                </td>
+                                <td>
+                                    <span class="badge {% if transacao.tipo == 'Receita' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ transacao.tipo }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('editar_transacao_form', transacao_id=transacao.id) }}" 
+                                       class="btn btn-sm btn-info text-white me-2">
+                                        Editar
+                                    </a>
+                                    
+                                    <form action="{{ url_for('excluir_transacao', transacao_id=transacao.id) }}" 
+                                          method="POST" 
+                                          style="display: inline;">
+                                        <button type="submit" 
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Tem certeza que deseja excluir esta transação?');">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-4">
+                    {% set receitas_filtradas = transacoes|selectattr('tipo', 'equalto', 'Receita')|map(attribute='valor')|sum %}
+                    {% set despesas_filtradas = transacoes|selectattr('tipo', 'equalto', 'Despesa')|map(attribute='valor')|sum %}
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h6>Total Receitas (Filtro)</h6>
+                                <h4>R$ {{ "%.2f"|format(receitas_filtradas) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body text-center">
+                                <h6>Total Despesas (Filtro)</h6>
+                                <h4>R$ {{ "%.2f"|format(despesas_filtradas) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h6>Saldo Parcial (Filtro)</h6>
+                                <h4>R$ {{ "%.2f"|format(receitas_filtradas - despesas_filtradas) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <h4 class="text-muted">Nenhuma transação encontrada com os filtros atuais.</h4>
+                    <p class="text-muted">Tente redefinir os filtros ou adicione mais transações.</p>
+                    <a href="{{ url_for('extrato') }}" class="btn btn-outline-secondary mt-3">Redefinir Filtros</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

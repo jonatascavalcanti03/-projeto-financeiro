@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Definir Orçamento - Finanças Pessoais{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Definir Orçamento Mensal</h5>
+                <p class="text-muted">Defina o limite máximo de gasto para cada categoria neste mês.</p>
+                
+                <form method="POST" action="{{ url_for('salvar_orcamento') }}">
+                    <div class="row g-3">
+                        {% for categoria, limite in orcamentos.items() %}
+                        <div class="col-12 col-md-6">
+                            <label for="{{ categoria }}" class="form-label">{{ categoria }} (R$)</label>
+                            <input type="number" class="form-control" id="{{ categoria }}" name="{{ categoria }}" step="0.01" min="0" 
+                                   value="{{ '%.2f'|format(limite) }}" placeholder="0.00">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success">Salvar Orçamentos</button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Voltar sem Salvar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

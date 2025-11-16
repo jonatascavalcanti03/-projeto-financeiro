@@ -1,0 +1,157 @@
+/* Custom CSS para Organização Financeira Pessoal */
+
+/* Variáveis de cores */
+:root {
+    --primary-blue: #0d6efd;
+    --dark-black: #212529;
+    --pure-white: #ffffff;
+    --success-green: #198754;
+    --danger-red: #dc3545;
+}
+
+/* Estilos gerais */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar customizada */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-blue) !important;
+}
+
+/* Cards customizados */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Botões customizados */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-1px);
+}
+
+/* Tabelas customizadas */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: var(--dark-black);
+    color: var(--pure-white);
+    font-weight: 600;
+    border: none;
+}
+
+.table td {
+    border-color: #dee2e6;
+    vertical-align: middle;
+}
+
+/* Badges customizados */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+}
+
+/* Formulários customizados */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Cards de saldo e resumo */
+.card.bg-primary, 
+.card.bg-success, 
+.card.bg-danger {
+    border: none;
+}
+
+.card.bg-primary:hover,
+.card.bg-success:hover,
+.card.bg-danger:hover {
+    transform: scale(1.02);
+}
+
+/* Responsividade adicional */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn {
+        font-size: 0.9rem;
+    }
+}
+
+/* Animações suaves */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Melhorias na tipografia */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--dark-black);
+    font-weight: 600;
+}
+
+.text-success {
+    color: var(--success-green) !important;
+}
+
+.text-danger {
+    color: var(--danger-red) !important;
+}
