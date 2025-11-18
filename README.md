@@ -48,7 +48,7 @@ Este projeto foi desenvolvido em colaboração entre [Jonatas Cavalcanti](https:
 
 2- Instale as dependências:
 
-    pip install flask sqlalchemy
+   python -m pip install Flask-SQLAlchemy
     
 3   - Execute o app:
 
